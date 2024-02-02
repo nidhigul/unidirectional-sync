@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <http:listener-config name="on-db-sapi-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8082" />
+    </http:listener-config>
+    <apikit:config name="on-db-sapi-config" api="resource::ce235d46-115c-497c-b0e2-474afd80f5e9:unidirectional-sync-process:1.0.4:raml:zip:on-db-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="on-db-sapi-main">
+        <http:listener config-ref="on-db-sapi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="on-db-sapi-config" />
+        <error-handler ref="errorHandler" />
+    </flow>
+    <flow name="on-db-sapi-console">
+        <http:listener config-ref="on-db-sapi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="on-db-sapi-config" />
+        <error-handler ref="errorHandler" />
+    </flow>
+	<flow name="put:\account:application\json:on-db-sapi-config" >
+		<flow-ref doc:name="update-subFlowSub_Flow" doc:id="ba1bef90-da7c-4b5f-a26b-e51198d9d4af" name="update-subFlowSub_Flow"/>
+	</flow>
+    <flow name="put:\address:application\json:on-db-sapi-config">
+		<flow-ref doc:name="update-subFlowSub_Flow" doc:id="374a5524-5675-4aa0-8463-a093448434b7" name="update-subFlowSub_Flow"/>
+    </flow>
+    <flow name="put:\contact:application\json:on-db-sapi-config">
+		<flow-ref doc:name="update-subFlowSub_Flow" doc:id="1dfbd5f4-1736-4d52-8dc1-e07e92e711ca" name="update-subFlowSub_Flow"/>
+    </flow>
+    <flow name="delete:\account\(accountId):on-db-sapi-config">
+		<flow-ref doc:name="delete-subFlowSub_Flow" doc:id="50980b74-5e92-44a4-b38c-870924a06547" name="delete-subFlowSub_Flow"/>
+    </flow>
+    <flow name="get:\healthCheck:on-db-sapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="bc42bd70-e739-475c-8ba6-0735841efca4" name="health-check-SubFlow" />
+    </flow>
+    <flow name="get:\account\(accountId):on-db-sapi-config">
+		<flow-ref doc:name="get-subFlowSub_Flow" doc:id="f82e1199-3399-4873-99e1-8d4fd9cb6e47" name="get-subFlowSub_Flow"/>
+    </flow>
+    <flow name="post:\account:application\json:on-db-sapi-config">
+		<flow-ref doc:name="create-subFlowSub_Flow" doc:id="bfbceb6c-3ff3-4bb5-8ea3-783746f6d791" name="create-subFlowSub_Flow"/>
+    </flow>
+    <flow name="post:\address:application\json:on-db-sapi-config">
+		<flow-ref doc:name="create-subFlowSub_Flow" doc:id="a0107491-d40e-41b0-abc9-9eea27fda816" name="create-subFlowSub_Flow" />
+    </flow>
+    <flow name="post:\contact:application\json:on-db-sapi-config">
+		<flow-ref doc:name="create-subFlowSub_Flow" doc:id="ce2b7236-c0be-44be-aa5b-a8abf10a41c1" name="create-subFlowSub_Flow" />
+    </flow>
+    <flow name="delete:\contact\(email):on-db-sapi-config">
+		<flow-ref doc:name="delete-subFlowSub_Flow" doc:id="c419dc96-84cd-4777-b737-1c512bca13e1" name="delete-subFlowSub_Flow" />
+    </flow>
+    <flow name="delete:\address\(zip):on-db-sapi-config">
+		<flow-ref doc:name="delete-subFlowSub_Flow" doc:id="17c8f12e-f225-4414-8d10-0dd090bd37e4" name="delete-subFlowSub_Flow" />
+    </flow>
+    <flow name="get:\contact\(email):on-db-sapi-config">
+		<flow-ref doc:name="get-subFlowSub_Flow" doc:id="cf9f01fc-28f4-4ea6-ad43-6a7a9c08ecaa" name="get-subFlowSub_Flow" />
+    </flow>
+    <flow name="get:\address\(zip):on-db-sapi-config">
+		<flow-ref doc:name="get-subFlowSub_Flow" doc:id="ff0c68dd-a61f-4668-8c76-99fdfdc30c5d" name="get-subFlowSub_Flow" />
+    </flow>
+</mule>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="update-subFlowSub_Flow" doc:id="27da3260-c766-49b8-acc8-cf79e72598a1" >
+		<logger level="INFO" doc:name="Start" doc:id="c643885c-8af7-4877-8541-44bea61fc80a" message="Flow started"/>
+		<choice doc:name="Choice" doc:id="d59ea185-c647-461c-b47a-c42d241f36f7" >
+			<when expression="#[isEmpty(payload.accountId) == false]" >
+				<db:update doc:name="UPDATE : customer account" doc:id="c0cc8879-2731-4c44-8679-b401d8c6636e" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update customerAccount set address = :address where accountId = :accountId]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"accountId": payload.accountId,
+	"address": payload.address
+	}]]]></db:input-parameters>
+				</db:update>
+			</when>
+			<when expression="#[isEmpty(payload.zip) == false]" >
+				<db:update doc:name="UPDATE : customer address" doc:id="56b1a107-8bfc-49d7-8f80-4a9301468be7" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update address set streetLine = :streetLine where zip = :zip]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	
+	"streetLine": payload.streetLine,
+	"zip": payload.zip,
+
+	}]]]></db:input-parameters>
+				</db:update>
+			</when>
+			<otherwise >
+				<db:update doc:name="UPDATE : customer contact" doc:id="f63bea66-123d-4d3f-89cf-a289d7d4082f" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update contact set isActive = :isActive where email = :email]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"email": payload.email,
+	"isActive": payload.isActive,
+	}]]]></db:input-parameters>
+				</db:update>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End" doc:id="b66f84c1-26cb-4df3-9e12-5015ba185118" message='Data updated' />
+	</sub-flow>
+</mule>

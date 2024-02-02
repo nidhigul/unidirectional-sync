@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="health-check-test-suite.xml" />
+	<munit:test name="health-check-test-suiteTest" doc:id="ab1b87b7-aa64-4f2e-9cd8-a908dbe0b2bf" >
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="acd3aa22-862c-445e-ac2e-9822916472f7" >
+				<munit:attributes value="#[readUrl('classpath://healthcheck/set-event-false-attributes.dwl')]" encoding="UTF-8" mediaType="application/java" />
+			</munit:set-event>
+			<flow-ref doc:name="health-check-sub-flow" doc:id="1991270f-ad7a-4a82-8e6b-3da95a7c3ab1" name="health-check-SubFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="82c250c2-b87c-446d-a44b-aaaed4ac7a37" atLeast="1" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Health check response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="34328dfe-d3b3-45f4-8f7d-3e0b61b992f3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

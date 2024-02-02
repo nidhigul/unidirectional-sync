@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="create-subFlowSub_Flow" doc:id="37f22759-feb2-480b-907c-ba328b04082e" >
+		<logger level="INFO" doc:name="Start" doc:id="a13672a6-2619-4861-a2c1-eec4d0fb0dfe" message="Flow started"/>
+		<choice doc:name="Choice" doc:id="fe6a0f1b-c874-4f8b-9547-ec1b8e4ea63f" >
+			<when expression="#[isEmpty(payload.accountId) == false]">
+				<db:insert doc:name="INSERT : customer account" doc:id="c4b65b6d-f54a-4666-a65e-1ceeac0a7891" config-ref="Database_Config">
+					<db:sql ><![CDATA[insert into customerAccount values(:accountId,:accountName,:poc,:address)]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"accountId": payload.accountId,
+	"accountName": payload.accontName,
+	"poc": payload.poc,
+	"address": payload.address
+	}]]]></db:input-parameters>
+				</db:insert>
+			</when>
+			<when expression="#[isEmpty(payload.zip) == false]">
+				<db:insert doc:name="INSERT : customer address" doc:id="fe18a491-5465-448a-a38a-2d020bca8aed" config-ref="Database_Config">
+					<db:sql><![CDATA[insert into address values(:addressId,:streetLine,:zip,:state,:city)]]></db:sql>
+					<db:input-parameters><![CDATA[#[{
+	"addressId": payload.addressId,
+	"streetLine": payload.streetLine,
+	"zip": payload.zip,
+	"state": payload.state,
+	"city": payload.city
+	}]]]></db:input-parameters>
+				</db:insert>
+			</when>
+			<otherwise>
+				<db:insert doc:name="INSERT : customer contact" doc:id="b681ea47-d0a8-4c75-be38-2800e18173bb" config-ref="Database_Config">
+					<db:sql ><![CDATA[insert into conatct values(:contactId,:phone,:email,:isActive,:fax)]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"contactId": payload.contactId,
+	"phone": payload.phone,
+	"email": payload.email,
+	"isActive": payload.isActive,
+	"fax": payload.fax
+}]]]></db:input-parameters>
+				</db:insert>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End" doc:id="8cb49654-3867-4809-9f9c-c133e7307083" message='Data inserted'/>
+	</sub-flow>
+</mule>

@@ -1,0 +1,5 @@
+{
+	queryParams: {
+		checkDependency: "false"
+	}
+}

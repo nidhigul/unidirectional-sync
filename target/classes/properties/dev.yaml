@@ -1,0 +1,8 @@
+#HTTP DEV CONFIG
+http:
+  host: ""
+  port: "80"
+
+# INSTANCE ID
+api:
+  id: "19276126"

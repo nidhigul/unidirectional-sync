@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="delete-subFlowSub_Flow" doc:id="0822680e-047f-4c91-b530-d6e932e491e8" >
+		<logger level="INFO" doc:name="Start" doc:id="d1ce0815-c004-4634-a785-4a240c2e8aaf" message="Flow started"/>
+		<choice doc:name="Choice" doc:id="96989522-c0f6-47ed-8002-28af37049ce5" >
+			<when expression="#[sizeOf(attributes.uriParams.accountId) == 3]" >
+				<db:delete doc:name="DELETE: customer account" doc:id="7cf08d4b-a06d-4ccb-a212-ca6873366eed" config-ref="Database_Config" >
+					<db:sql ><![CDATA[delete from customerAccount where accountId = :accountId]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"accountId": attributes.uriParams.accountId
+}]]]></db:input-parameters>
+				</db:delete>
+			</when>
+			<when expression="#[typeOf(attributes.uriParams.zip) == String]" >
+				<db:delete doc:name="DELETE: customer address" doc:id="b01494b0-79e8-4945-9aa1-652a156c05e3" config-ref="Database_Config" >
+					<db:sql ><![CDATA[delete from address where zip = :zip]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"zip": attributes.uriParams.zip
+}]]]></db:input-parameters>
+				</db:delete>
+			</when>
+			<otherwise >
+				<db:delete doc:name="DELETE: customer contact" doc:id="e3035e7a-23ad-44ad-b457-8a4e3bc16e72" config-ref="Database_Config" >
+					<db:sql ><![CDATA[delete from contact where email = :email]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"email": attributes.uriParams.email
+}]]]></db:input-parameters>
+				</db:delete>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End" doc:id="9c41a07b-ce53-4d36-a6f0-40cc675b1e71" message='Data deleted' />
+	</sub-flow>
+</mule>

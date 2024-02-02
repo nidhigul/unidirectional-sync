@@ -1,0 +1,7 @@
+# JSON LOGGER CONFIG        
+mysql:
+  host: "mysql-162461-0.cloudclusters.net"
+  port: "19956"
+  user: "blue"
+  password: "12345678"
+  db: "illinois"

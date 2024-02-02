@@ -1,0 +1,8 @@
+# HTTP LOCAL CONFIG
+http:
+  port: "8081"
+
+# INSTANCE ID
+api:
+  id: "19276126"
+  

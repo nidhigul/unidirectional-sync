@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="get-subFlowSub_Flow" doc:id="237d6c02-b441-41ae-a308-8e8cf2762ca7" >
+		<logger level="INFO" doc:name="Start" doc:id="1d808c91-3b5c-43e5-bb67-a73afb74e0b3" message="Flow started"/>
+		<choice doc:name="Choice" doc:id="91310dd6-48fa-4faa-8020-16c01529b317" >
+			<when expression="#[sizeOf(attributes.uriParams.accountId) == 3]" >
+				<db:select doc:name="GET : customer account" doc:id="515366aa-f982-44bf-953c-671c017e29b5" config-ref="Database_Config">
+					<db:sql ><![CDATA[select * from customerAccount where accountId = :accountId]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"accountId": attributes.uriParams.accountId
+}]]]></db:input-parameters>
+				</db:select>
+			</when>
+			<when expression="#[typeOf(attributes.uriParams.zip) == String]" >
+				<db:select doc:name="GET: customer address" doc:id="2951593d-8b7f-41dc-9f8a-6e243538cb9e" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select * from address where zip = :zip]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"zip": attributes.uriParams.zip
+}]]]></db:input-parameters>
+				</db:select>
+			</when>
+			<otherwise >
+				<db:select doc:name="GET : customer contact" doc:id="e6810172-fb94-46eb-8731-36ad900ec975" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select * from contact where email = :email]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	"email": attributes.uriParams.email
+}]]]></db:input-parameters>
+				</db:select>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Get response" doc:id="e152c9f0-16ba-4242-bc57-f11e059a49f6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End" doc:id="f8af8af6-a9cb-4c9e-9958-1b627a2499dd" message='#[payload]' />
+	</sub-flow>
+</mule>
